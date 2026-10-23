@@ -1,0 +1,14 @@
+rules_version = '2';
+
+// Anyone can read team data. Only the coach account can change it.
+// Keep the email below in sync with COACH_EMAIL in js/config.js.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{collection}/{docId} {
+      allow read: if collection in ['players', 'matches', 'announcements'];
+      allow write: if collection in ['players', 'matches', 'announcements']
+        && request.auth != null
+        && request.auth.token.email == 'coaches@example.com';
+    }
+  }
+}
